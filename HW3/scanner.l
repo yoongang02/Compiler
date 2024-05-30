@@ -24,6 +24,7 @@
 	#include <stdlib.h>
     #include "tn.h"
 	#include "global.h"
+    #include "symtable.h"
 %}
 
 letter [A-Za-z_]
@@ -33,7 +34,7 @@ wrongchar [^ ,;!\t\n(){}\[\]&|\-=\+*/%<>]
 
 {letter}({letter}|{digit})*								return(TIDENT);
 {digit}*												return(TNUMBER);
-{digit}+"."{digit}					                    return(TFNUMBERER);
+{digit}+"."{digit}*					                    return(TFNUMBER);
 "const"													return(TCONST);
 "else"													return(TELSE);
 "if"													return(TIF);

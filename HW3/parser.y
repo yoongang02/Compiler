@@ -11,7 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <malloc.h>
-#include <symtable.h>	
+#include "symtable.h"	
 #include "global.h"
 
 void line(int);
@@ -21,10 +21,11 @@ extern yyerror(s);
 %}
 
 %token TIDENT TNUMBER TFNUMBER TCONST TELSE TIF TINT TRETURN TVOID TWHILE
-%token TADDASSIGN TSUBASSIGN TMULASSIGN TDIVASSGIN TMODASSIGN
+%token TADDASSIGN TSUBASSIGN TMULASSIGN TDIVASSIGN TMODASSIGN
 %token TOR TAND TEQUAL TNOTEQU TGREAT TLESS TGREATE TLESSE TINC TDEC
 %token TPLUS TMINUS TMUL TDIV TMOD TNOT TASSIGN TLPAREN TRPAREN TCOMMA TSEMICOLON
 %token TLBRACKET TRBRACKET TLBRACE TRBRACE
+%token TWHITESPACE TERROR
 %nonassoc TLOWER_THEN_ELSE
 %nonassoc TELSE
 
@@ -51,11 +52,6 @@ type_specifier 		: TINT
 						//int
 						tmp_type_detail = 1;
 					}
-					| TFNUMBER
-					{
-						//float
-						tmp_type_detail = 2;
-					}
 		 	        | TVOID
 					{
 						//void
@@ -67,7 +63,7 @@ function_name 	    : TIDENT
 						tmp_type = 2;
 						yytext = $1;
 						yyleng = strlen(yytext);
-						tmp_func_name = yytext;
+						recent_func_name = yytext;
 						SymbolTable();
 					};
 formal_param 		: TLPAREN opt_formal_param TRPAREN 		                ;
@@ -110,7 +106,6 @@ declarator 		    : TIDENT
 						SymbolTable();
 					};
 opt_number 		    : TNUMBER				                                
-					| TFNUMBER
 	     		    |					                                    ;
 opt_stat_list 		: statement_list			                            
 		 	        |					                                    ;
@@ -135,7 +130,7 @@ assignment_exp 	    : logical_or_exp
 			        | unary_exp TADDASSIGN assignment_exp 	              
 			        | unary_exp TSUBASSIGN assignment_exp 	                
 			        | unary_exp TMULASSIGN assignment_exp 	                
-			        | unary_exp TDIVASSGIN assignment_exp 	           
+			        | unary_exp TDIVASSIGN assignment_exp 	           
 			        | unary_exp TMODASSIGN assignment_exp 	              
 			        ;
 logical_or_exp 	    : logical_and_exp			                           
@@ -173,7 +168,6 @@ actual_param 		: actual_param_list			                          ;
 actual_param_list 	: assignment_exp			                          
 		   	        | actual_param_list TCOMMA assignment_exp 	            ;
 primary_exp 		: TIDENT				                            
-	     		    | TNUMBER
-					| TFNUMBER				                              
+	     		    | TNUMBER		                              
 	     		    | TLPAREN expression TRPAREN			                   ;
 %%

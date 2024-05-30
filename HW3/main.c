@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "tn.h"
-#include "glob.h"
+#include "global.h"
 
 extern int yyparse();
 
